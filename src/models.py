@@ -2,18 +2,60 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+charlotte = {
+    "id":5,
+    "name": "Charlotte",
+    "children": []
+}
 
-    def __repr__(self):
-        return '<User %r>' % self.username
+harrison = {
+    "id":6,
+    "name": "Harrison",
+    "children": []
+}
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
-        }
+harry = {
+    "id":4,
+    "name": "Harry",
+    "children": [harrison]
+}
+
+william = {
+    "id":3,
+    "name": "William",
+    "children": [charlotte]
+}
+
+charles = {
+    "id":2,
+    "name": "Charles",
+    "children": [william, harry]
+}
+
+queen = {
+    "id":1,
+    "name": "Elizabeth",
+    "children": [charles]
+}
+
+members_list = []
+
+def get_all_members(parent):
+    for children in parent["children"]:
+        members_list.append(children)
+        get_all_members(children)
+    return members_list
+
+# print(get_all_members(queen))
+
+def find_single_member(parent,id):
+    for children in parent["children"]:
+        if parent["id"] == id:
+            return parent
+        if children["id"] == id:
+            return children
+        return find_single_member(children, id)
+
+# print(find_single_member(queen, 5))
+
+
